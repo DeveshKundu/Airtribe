@@ -86,3 +86,14 @@ app.get("/learners", async (req, res) => {
     }
 });
 
+// add comment to a lead
+app.post("/learners/:learnerId/comments", async (req, res) => {
+    try {
+        const learner = await LearnerCollection.findById(req.params.learnerId);
+        const comment = new CommentCollection({ ...req.body, learner: learner._id });
+        await comment.save();
+        res.status(201).send(learner);
+    } catch (error) {
+        res,status(400).send(error);
+    }
+});
