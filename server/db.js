@@ -64,7 +64,7 @@ const LearnerSchema = new mongoose.Schema({
     }]
 });
 
-// Schema for Course
+// Schema for Courses
 const CourseSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -83,13 +83,31 @@ const CourseSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Instructor'
     },
-    learners: [{git
+    learners: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Learner'
     }]
+});
+
+// Schema for Comments
+const CommentSchema = new mongoose.Schema({
+    text: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    instructor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Instructor'
+    },
+    learner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Learner'
+    }
 });
 
 // All required models
 const InstructorCollection = mongoose.model('Instructor', InstructorSchema);
 const LearnerCollection = mongoose.model('Learner', LearnerSchema);
 const CourseCollection = mongoose.model('Course', CourseSchema);
+const CommentCollection = mongoose.model('Comment', CommentSchema);
