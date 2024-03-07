@@ -32,3 +32,17 @@ app.post("/courses", async (req, res) => {
     }
 });
 
+app.put("/courses/:courseId", async (req, res) => {
+    try {
+        const course = await CourseCollection.findByIdAndUpdate(
+            req.params.courseId, req.body, {new: true, runValidators: true}
+        );
+        if (!course) {
+            return res.status(404).send();
+        }
+        res.status(201).send(course);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
