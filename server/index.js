@@ -46,3 +46,14 @@ app.put("/courses/:courseId", async (req, res) => {
     }
 });
 
+app.post("/courses/:courseId/learners", async (req, res) => {
+    try {
+        const course = await CourseCollection.findById(req.params.courseId);
+        const learner = new LearnerCollection({ ...req.body, course: course._id });
+        await learner.save();
+        res.status(201).send(learner);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
