@@ -64,6 +64,32 @@ const LearnerSchema = new mongoose.Schema({
     }]
 });
 
+// Schema for Course
+const CourseSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    max_seats: {
+        type: Number,
+        required: true
+    },
+    start_date: {
+        type: Date,
+        required: true
+    },
+    instructor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Instructor'
+    },
+    learners: [{git
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Learner'
+    }]
+});
+
 // All required models
 const InstructorCollection = mongoose.model('Instructor', InstructorSchema);
 const LearnerCollection = mongoose.model('Learner', LearnerSchema);
+const CourseCollection = mongoose.model('Course', CourseSchema);
