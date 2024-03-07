@@ -111,3 +111,5 @@ const InstructorCollection = mongoose.model('Instructor', InstructorSchema);
 const LearnerCollection = mongoose.model('Learner', LearnerSchema);
 const CourseCollection = mongoose.model('Course', CourseSchema);
 const CommentCollection = mongoose.model('Comment', CommentSchema);
+
+module.exports = mongoose;
