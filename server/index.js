@@ -17,7 +17,7 @@ app.get("/*", (req, res) => {
 app.get("/courses", async (req, res) => {
     try {
         const courses = await CourseCollection.find({});
-        res.json({ courses });
+        res.send(courses);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -73,6 +73,16 @@ app.patch("/learners/:learnerId", async (req, res) => {
         res.status(201).send(learner);
     } catch (error) {
         res.status(400).send(error);
+    }
+});
+
+// search a lead
+app.get("/learners", async (req, res) => {
+    try {
+        const learners = await LearnerCollection.find(req.query);
+        res.send(learners);
+    } catch (error) {
+        res.status(500).send(error);
     }
 });
 
