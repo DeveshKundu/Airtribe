@@ -1,19 +1,10 @@
 const express = require('express');
-const cors = require('cors');
-
-require('dotenv').config();
-
-// import collections
-const CourseCollection = require('./database/course');
-const LearnerCollection = require('./database/learner');
-const InstructorCollection = require('./database/instructor');
-const CommentCollection = require('./database/comment');
+const pool = require('./database/conn');
 
 const app = express();
-const port = process.env.PORT;
+const port = 3000;
 
 app.use(express.json());
-app.use(cors());
 
 // start the server
 app.listen(port, () => {
@@ -28,8 +19,8 @@ app.get("/*", (req, res) => {
 // list all the courses
 app.get("/courses", async (req, res) => {
     try {
-        const courses = await CourseCollection.find({});
-        res.send(courses);
+        const courses = await pool.query(`SELECT * FROM courses`);
+        res.status(201).send(courses.rows);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -37,9 +28,11 @@ app.get("/courses", async (req, res) => {
 
 // create a course
 app.post("/courses", async (req, res) => {
-    const course = new CourseCollection(req.body);
+    const { name, max_seats, start_date, instructor_id } = req.body;
     try {
-        await course.save();
+        await pool.query(
+            `INSERT INTO courses (name, max_seats, start_date, instructor_id) VALUES ($1, $2, $3, $4)`, [name, max_seats, start_date, instructor_id]
+        );
         res.status(201).send(`Course created Successfully!`);
     } catch (error) {
         res.status(400).send(error);
@@ -48,13 +41,11 @@ app.post("/courses", async (req, res) => {
 
 // update the course details by instructor
 app.put("/courses/:courseId", async (req, res) => {
+    const { name, max_seats, start_date, instructor_id } = req.body;
     try {
-        const course = await CourseCollection.findByIdAndUpdate(
-            req.params.courseId, req.body, {new: true, runValidators: true}
+        await pool.query(
+            `UPDATE courses SET name = $1, max_seats = $2, start_date = $3, instructor_id = $4 WHERE id = $5`, [name, max_seats, start_date, instructor_id, req.params.courseId]
         );
-        if (!course) {
-            return res.status(404).send();
-        }
         res.status(201).send(`Course details updated Successfully!`);
     } catch (error) {
         res.status(400).send(error);
@@ -63,11 +54,12 @@ app.put("/courses/:courseId", async (req, res) => {
 
 // register for a course by learner
 app.post("/courses/:courseId/learners", async (req, res) => {
+    const { name, email, phone_number, linkedin_profile } = req.body;
     try {
-        const course = await CourseCollection.findById(req.params.courseId);
-        const learner = new LearnerCollection({ ...req.body, course: course._id });
-        await learner.save();
-        res.status(201).send(`You are registered for ${course.name}.`);
+        await pool.query(
+            `INSERT INTO learners (name, email, phone_number, linkedin_profile, course_id) VALUES ($1, $2, $3, $4, $5)`, [name, email, phone_number, linkedin_profile]
+        );
+        res.status(201).send(`You are registered for ${name}.`);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -75,13 +67,11 @@ app.post("/courses/:courseId/learners", async (req, res) => {
 
 // update a lead with their status by instructor
 app.patch("/learners/:learnerId", async (req, res) => {
+    const { status } = req.body;
     try {
-        const learner = await LearnerCollection.findByIdAndUpdate(
-            req.params.learnerId, req.body, {new: true, runValidators: true}
+        await pool.query(
+            `UPDATE learners SET status = $1 WHERE id = $2`, [status, req.params.learnerId]
         );
-        if (!learner) {
-            return res.status(404).send();
-        }
         res.status(201).send(`Status got updated!`);
     } catch (error) {
         res.status(400).send(error);
@@ -90,9 +80,12 @@ app.patch("/learners/:learnerId", async (req, res) => {
 
 // search a lead
 app.get("/learners", async (req, res) => {
+    const { name, email } = req.query;
     try {
-        const learners = await LearnerCollection.find(req.query);
-        res.send(learners);
+        const learners = await pool.query(
+            `SELECT * FROM learners WHERE name = $1 OR email = $2`, [name, email]
+        );
+        res.send(learners.rows);
     } catch (error) {
         res.status(500).send(error);
     }
@@ -100,10 +93,11 @@ app.get("/learners", async (req, res) => {
 
 // add comment to a lead
 app.post("/learners/:learnerId/comments", async (req, res) => {
+    const { comment_text } = req.body;
     try {
-        const learner = await LearnerCollection.findById(req.params.learnerId);
-        const comment = new CommentCollection({ ...req.body, learner: learner._id });
-        await comment.save();
+        await pool.query(
+            `INSERT INTO comments (comment_text, application_id) VALUES ($1, $2)`, [comment_text, req.params.learnerId]
+        );
         res.status(201).send(`Your comment got added!`);
     } catch (error) {
         res.status(400).send(error);

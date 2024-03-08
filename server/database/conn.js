@@ -1,8 +1,11 @@
-const mongoose = require('mongoose');
+const { Pool } = require('pg');
 
-const uri = process.env.URI;
+const pool = new Pool({
+  user: "postgres",
+  host: "localhost",
+  database: "airtribe",
+  password: "devesh",
+  port: 5000
+});
 
-mongoose
-  .connect(uri)
-  .then( () => console.log("Connected to MongoDB!") )
-  .catch( () => console.error.bind(console, "MongoDB connection error:") );
+module.exports = pool;
