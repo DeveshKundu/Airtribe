@@ -1,14 +1,24 @@
 const express = require('express');
-const { CourseCollection, LearnerCollection, InstructorCollection, CommentCollection } = require('./db');
+const cors = require('cors');
+
+// import collections
+const CourseCollection = require('./database/course');
+const LearnerCollection = require('./database/learner');
+const InstructorCollection = require('./database/instructor');
+const CommentCollection = require('./database/comment');
+
 const app = express();
 const port = 5000;
 
 app.use(express.json());
+app.use(cors());
 
+// start the server
 app.listen(port, () => {
     console.log(`App running on port ${port}`);
 });
 
+// for any route error
 app.get("/*", (req, res) => {
     res.send(`You got the route error`);
 });
@@ -28,7 +38,7 @@ app.post("/courses", async (req, res) => {
     const course = new CourseCollection(req.body);
     try {
         await course.save();
-        res.status(201).send(course);
+        res.status(201).send(`Course created Successfully!`);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -43,7 +53,7 @@ app.put("/courses/:courseId", async (req, res) => {
         if (!course) {
             return res.status(404).send();
         }
-        res.status(201).send(course);
+        res.status(201).send(`Course details updated Successfully!`);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -55,7 +65,7 @@ app.post("/courses/:courseId/learners", async (req, res) => {
         const course = await CourseCollection.findById(req.params.courseId);
         const learner = new LearnerCollection({ ...req.body, course: course._id });
         await learner.save();
-        res.status(201).send(learner);
+        res.status(201).send(`You are registered for ${course.name}.`);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -70,7 +80,7 @@ app.patch("/learners/:learnerId", async (req, res) => {
         if (!learner) {
             return res.status(404).send();
         }
-        res.status(201).send(learner);
+        res.status(201).send(`Status got updated!`);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -92,8 +102,8 @@ app.post("/learners/:learnerId/comments", async (req, res) => {
         const learner = await LearnerCollection.findById(req.params.learnerId);
         const comment = new CommentCollection({ ...req.body, learner: learner._id });
         await comment.save();
-        res.status(201).send(learner);
+        res.status(201).send(`Your comment got added!`);
     } catch (error) {
-        res,status(400).send(error);
+        res.status(400).send(error);
     }
 });
