@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const uri = "mongodb+srv://deveshk28:6DsgooiaNWy3Z5iC@clustur.xvadqep.mongodb.net/Airtribe?retryWrites=true&w=majority";
+const uri = process.env.URI;
 
 mongoose
   .connect(uri)

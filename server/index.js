@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 
+require('dotenv').config();
+
 // import collections
 const CourseCollection = require('./database/course');
 const LearnerCollection = require('./database/learner');
@@ -8,7 +10,7 @@ const InstructorCollection = require('./database/instructor');
 const CommentCollection = require('./database/comment');
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT;
 
 app.use(express.json());
 app.use(cors());
