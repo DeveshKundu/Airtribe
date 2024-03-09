@@ -11,11 +11,6 @@ app.listen(port, () => {
     console.log(`App running on port ${port}`);
 });
 
-// for any route error
-app.get("/*", (req, res) => {
-    res.send(`You got the route error`);
-});
-
 // list all the courses
 app.get("/courses", async (req, res) => {
     try {
@@ -101,9 +96,12 @@ app.post("/courses/:courseId/learners", async (req, res) => {
 
     try {
         await pool.query(
-            `INSERT INTO learners (name, email, phone_number, linkedin_profile, course_id) VALUES ($1, $2, $3, $4, $5)`, [name, email, phone_number, linkedin_profile]
+            `INSERT INTO learners (name, email, phone_number, linkedin_profile, course_id) VALUES ($1, $2, $3, $4, $5)`, [name, email, phone_number, linkedin_profile, req.params.courseId]
         );
-        res.status(201).send(`You are registered for ${name}.`);
+        const course = await pool.query(
+            `SELECT NAME FROM courses WHERE id = $1`, [req.params.courseId]
+        );
+        res.status(201).send(`You are registered for ${course}.`);
     } catch (error) {
         res.status(400).send(error);
     }
@@ -119,7 +117,7 @@ app.patch("/learners/:learnerId", async (req, res) => {
 
     try {
         await pool.query(
-            `UPDATE learners SET status = $1 WHERE id = $2`, [status, req.params.learnerId]
+            `UPDATE leads SET status = $1 WHERE id = $2`, [status, req.params.learnerId]
         );
         res.status(201).send(`Status got updated!`);
     } catch (error) {
@@ -129,7 +127,7 @@ app.patch("/learners/:learnerId", async (req, res) => {
 
 // search a lead
 app.get("/learners", async (req, res) => {
-    const { name, email } = req.query;
+    const { name, email } = req.body;
     // validation
     if (name && typeof name !== 'string') {
         return res.status(400).send(`Name must be a string.`);
@@ -158,10 +156,15 @@ app.post("/learners/:learnerId/comments", async (req, res) => {
 
     try {
         await pool.query(
-            `INSERT INTO comments (comment_text, application_id) VALUES ($1, $2)`, [comment_text, req.params.learnerId]
+            `INSERT INTO comments (comment_text, lead_id) VALUES ($1, $2)`, [comment_text, req.params.learnerId]
         );
         res.status(201).send(`Your comment got added!`);
     } catch (error) {
         res.status(400).send(error);
     }
+});
+
+// for any route error
+app.get("/*", (req, res) => {
+    res.send(`You got the route error`);
 });

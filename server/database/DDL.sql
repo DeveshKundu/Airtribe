@@ -13,17 +13,10 @@
 --     CONNECTION LIMIT = -1
 --     IS_TEMPLATE = False;
 
--- DROP TABLE instructors;
+-- IMPORTANT
+-- DO RUN BELOW QUERIES BEFORE ENTERING DATAS FROM DML.sql FILE
 
 CREATE TABLE instructors (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone_number VARCHAR(15) UNIQUE NOT NULL,
-    linkedin_profile VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE learners (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -38,6 +31,16 @@ CREATE TABLE courses (
     start_date DATE NOT NULL,
     instructor_id INT,
     FOREIGN KEY (instructor_id) REFERENCES instructors(id)
+);
+
+CREATE TABLE learners (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone_number VARCHAR(15) UNIQUE NOT NULL,
+    linkedin_profile VARCHAR(255) NOT NULL,
+	course_id INT,
+	FOREIGN KEY (course_id) REFERENCES courses(id)
 );
 
 CREATE TABLE leads (
