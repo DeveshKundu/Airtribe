@@ -44,19 +44,21 @@ The server and database are dockerized for easy setup and deployment.
 
 Follow these steps to set up the environment:
 
-1. **Build the Docker image**: Run the following command to build the Docker image for your Node.js app:
+1. Start your `Docker Desktop` in the background first.
+
+2. **Build the Docker image**: Run the following command to build the Docker image for your Node.js app:
 
     ```
     docker build -t my-node-app .
     ```
 
-2. **Start the Docker containers**: Use Docker Compose to start your app and database in separate containers:
+3. **Start the Docker containers**: Use Docker Compose to start your app and database in separate containers:
 
     ```
     docker-compose up
     ```
 
-3. **Access pgAdmin**: Open your web browser and navigate to `http://localhost:5050` to access pgAdmin 4. Use the following credentials to log in:
+4. **Access pgAdmin**: Open your web browser and navigate to `http://localhost:5050` to access pgAdmin 4. Use the following credentials to log in:
 
     - Username: `admin@admin.com`
     - Password: `admin`
