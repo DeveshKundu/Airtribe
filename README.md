@@ -76,3 +76,9 @@ Before running the server, you need to set up your database tables and load the 
 1. **Create the tables**: Run the `DDL.sql` script to create the necessary tables in your database. This script contains all the `CREATE TABLE` commands.
 
 2. **Load the test data**: Run the `DML.sql` script to load the sample data into your tables. This script contains `INSERT` statements for each table.
+
+## Acknowledgments
+
+A special thanks to my friend who helped me understand the concepts of Docker. 
+
+You can check out his work on GitHub here: https://github.com/shivanshu877
