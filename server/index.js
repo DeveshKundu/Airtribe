@@ -101,7 +101,7 @@ app.post("/courses/:courseId/learners", async (req, res) => {
         const course = await pool.query(
             `SELECT NAME FROM courses WHERE id = $1`, [req.params.courseId]
         );
-        res.status(201).send(`You are registered for ${course}.`);
+        res.status(201).send(`You are registered for ${course.rows[0].name}.`);
     } catch (error) {
         res.status(400).send(error);
     }
