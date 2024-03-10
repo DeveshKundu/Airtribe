@@ -56,7 +56,10 @@ Follow these steps to set up the environment:
     docker-compose up
     ```
 
+3. **Access pgAdmin**: Open your web browser and navigate to `http://localhost:5050` to access pgAdmin 4. Use the following credentials to log in:
 
+    - Username: `admin@admin.com`
+    - Password: `admin`
 
 ## Testing
 
